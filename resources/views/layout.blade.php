@@ -228,12 +228,17 @@
                         step
                     </a>
                 </div>
-            </div>
 
+            </div>
         </div>
 
         {{--<div class="row">--}}
-
+    <div class="text-center">
+        <h1>Before use this app please fresh database</h1>
+        <a href="/fresh" class="btn btn-outline-info btn-rounded mb-4" >
+            fresh
+        </a>
+    </div>
         @if($step==1)
             <div class="row">
                 <table class="table">

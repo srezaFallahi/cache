@@ -28,7 +28,7 @@ Route::get('/', function () {
     $calculate=0;
     return view('layout', compact("caches","step","calculate","freshDataBase","s"));
 });
-Route::get('/test',function (){
+Route::get('/fresh',function (){
     \App\Cache::truncate();
     \App\Status::truncate();
     \App\Address::truncate();
