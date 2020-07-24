@@ -20,6 +20,7 @@ class CreateAddressesTable extends Migration
             $table->string('index');
             $table->string('bo');
             $table->string('status');
+            $table->integer('counter')->default(0);
             $table->timestamps();
         });
     }

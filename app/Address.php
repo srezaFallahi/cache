@@ -9,5 +9,5 @@ class Address extends Model
     public function cache(){
         return $this->hasOne('App\Cache');
     }
-    protected $fillable=['index','tag','bo','cache_id','status'];
+    protected $fillable=['index','tag','bo','cache_id','status','counter'];
 }

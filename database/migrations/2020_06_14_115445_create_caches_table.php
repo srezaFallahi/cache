@@ -20,6 +20,8 @@ class CreateCachesTable extends Migration
             $table->integer('index_size');
             $table->integer('tag_size');
             $table->integer('bo_size');
+            $table->integer('way')->nullable();
+            $table->string('map_type');
             $table->integer('address_size');
             $table->integer('cache_access_time');
             $table->integer('cache_miss_time');

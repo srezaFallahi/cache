@@ -24,148 +24,110 @@
 <body>
 
 <div class="container" style="margin-top: 1%">
-    <form action="{{route('cache.store')}}" method="POST" class="needs-validation" novalidate>
-        @csrf
-        <div class="form-row">
-            <div class="col-3 mb-3">
-                <label for="validationCustom03">Memory Size</label>
-                <input type="text" class="form-control" name="memory_size" required>
-                @error('memory_size')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-3 mb-3">
-                <label for="validationCustom04">type</label>
-                <select class="custom-select" name="memory_type" required>
-                    <option selected disabled>Choose</option>
-                    <option value="kb">Kb</option>
-                    <option value="mb">Mb</option>
-                </select>
-                @error('memory_type')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-        </div>
-        <div class="form-row">
-            <div class="col-3 mb-3">
-                <label for="validationCustom03">Cache Size</label>
-                <input type="text" class="form-control" name="cache_size" required>
-                @error('cache_size')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="col-3 mb-3">
-                <label for="validationCustom04">type</label>
-                <select class="custom-select" name="cache_type" required>
-                    <option selected disabled>Choose</option>
-                    <option value="kb">Kb</option>
-                    <option value="mb">Mb</option>
-                </select>
-                @error('cache_type')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-
-        </div>
-        <div class="form-row">
-
-            <div class="col-3 mb-3">
-                <label for="validationCustom03">block Size</label>
-                <input type="text" class="form-control" name="block_size" required>
-                @error('block_size')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            {{--                </div>--}}
-            {{--                <div class="form-row">--}}
-
-            <div class="col-3 mb-3">
-                <label for="validationCustom03">cache access time</label>
-                <input type="text" class="form-control" name="cache_access_time" required>
-                @error('cache_access_time')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            {{--                </div>--}}
-            {{--                <div class="form-row">--}}
-
-            <div class="col-3 mb-3">
-                <label for="validationCustom03">cache miss time</label>
-                <input type="text" class="form-control" name="cache_miss_time" required>
-                @error('cache_miss_time')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-        </div>
-        <input type="submit" class="btn btn-primary" value="make cache and memory">
-    </form>
-    <div class="row" style="margin-left: 1px">
-        <div class="modal fade" id="modalSubscriptionForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Address</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{route('address.store')}}" method="POST">
-                        @CSRF
-
-                        <div class="modal-body mx-3">
-                            <div class="md-form mb-4">
-                                <i class="fas fa-envelope prefix grey-text"></i>
-                                <input type="text" name="address" class="form-control validate">
-                                @error('address')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                                <label data-error="wrong" data-success="right" for="form2">Enter Address</label>
-
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label for="validationCustom04">Choose Cache</label>
-                                <select class="custom-select" name="cache_id" required>
-                                    <option selected disabled>Choose</option>
-                                    @if($caches!=null);
-                                    @foreach($caches as $cache)
-                                        <option value="{{$cache->id}}">{{$cache->size}} {{$cache->type}}</option>
-                                    @endforeach
-                                    @endif
-                                </select>
-                                @error('cache_id')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <input type="submit" class="btn btn-indigo" value="check">
-                        </div>
-                    </form>
-
+{{--    @if($freshDataBase==0)--}}
+        <form action="{{route('cache.store')}}" method="POST" class="needs-validation" novalidate>
+            @csrf
+            <div class="form-row">
+                <div class="col-3 mb-3">
+                    <label for="validationCustom03">Memory Size</label>
+                    <input type="text" class="form-control" name="memory_size" required>
+                    @error('memory_size')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
-            </div>
-        </div>
 
-        <div class="text-center">
-            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal"
-               data-target="#modalSubscriptionForm">
-                Add or search address
-            </a>
-        </div>
-        <div>
-            <form action="{{route('address.show',1)}}" method="Get">
-                @csrf
-                <input type="submit" class="btn btn-warning" value="calculate">
-            </form>
-        </div>
+                <div class="col-3 mb-3">
+                    <label for="validationCustom04">type</label>
+                    <select class="custom-select" name="memory_type" required>
+                        <option selected disabled>Choose</option>
+                        <option value="kb">Kb</option>
+                        <option value="mb">Mb</option>
+                    </select>
+                    @error('memory_type')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+
+            </div>
+            <div class="form-row">
+                <div class="col-3 mb-3">
+                    <label for="validationCustom03">Cache Size</label>
+                    <input type="text" class="form-control" name="cache_size" required>
+                    @error('cache_size')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-3 mb-3">
+                    <label for="validationCustom04">type</label>
+                    <select class="custom-select" name="cache_type" required>
+                        <option selected disabled>Choose</option>
+                        <option value="kb">Kb</option>
+                        <option value="mb">Mb</option>
+                    </select>
+                    @error('cache_type')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-3 mb-3">
+                    <label for="validationCustom04">map type</label>
+                    <select class="custom-select" name="map_type" id="type" required>
+                        <option selected disabled>Choose</option>
+                        <option value="direct">direct</option>
+                        <option value="FA">FA</option>
+                        <option value="SA">SA</option>
+                    </select>
+                    @error('memory_type')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+            </div>
+            <div class="form-row">
+
+                <div class="col-3 mb-3">
+                    <label for="validationCustom03">block Size</label>
+                    <input type="text" class="form-control" name="block_size" required>
+                    @error('block_size')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                {{--                </div>--}}
+                {{--                <div class="form-row">--}}
+{{--                @if($mapType==2)--}}
+{{--                @if($s==1)--}}
+                <div class="col-3 mb-3 way" id="SA">
+                    <label for="validationCustom03">way</label>
+                    <input type="number" class="form-control" name="way" required>
+                    @error('cache_access_time')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+{{--                @endif--}}
+                <div class="col-3 mb-3">
+                    <label for="validationCustom03">cache access time</label>
+                    <input type="text" class="form-control" name="cache_access_time" required>
+                    @error('cache_access_time')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                {{--                </div>--}}
+                {{--                <div class="form-row">--}}
+
+                <div class="col-3 mb-3">
+                    <label for="validationCustom03">cache miss time</label>
+                    <input type="text" class="form-control" name="cache_miss_time" required>
+                    @error('cache_miss_time')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+            </div>
+            <input type="submit" class="btn btn-primary" value="make cache and memory">
+        </form>
         <div class="row" style="margin-left: 1px">
-            <div class="modal fade" id="modalSubscriptionForm1" tabindex="-1" role="dialog"
+            <div class="modal fade" id="modalSubscriptionForm" tabindex="-1" role="dialog"
                  aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -176,8 +138,9 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="{{route('step')}}" method="POST">
+                        <form action="{{route('address.store')}}" method="POST">
                             @CSRF
+
                             <div class="modal-body mx-3">
                                 <div class="md-form mb-4">
                                     <i class="fas fa-envelope prefix grey-text"></i>
@@ -186,6 +149,21 @@
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                     <label data-error="wrong" data-success="right" for="form2">Enter Address</label>
+
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label for="validationCustom04">Choose Cache</label>
+                                    <select class="custom-select" name="cache_id" required>
+                                        <option selected disabled>Choose</option>
+                                        @if($caches!=null);
+                                        @foreach($caches as $cache)
+                                            <option value="{{$cache->id}}">{{$cache->size}} {{$cache->type}}</option>
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                    @error('cache_id')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                             </div>
@@ -199,48 +177,99 @@
             </div>
 
             <div class="text-center">
-                <a href="" class="btn btn-danger btn-rounded mb-4" data-toggle="modal"
-                   data-target="#modalSubscriptionForm1">
-                    step
+                <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal"
+                   data-target="#modalSubscriptionForm">
+                    Add or search address
                 </a>
             </div>
+            <div>
+                <form action="{{route('address.show',1)}}" method="Get">
+                    @csrf
+                    <input type="submit" class="btn btn-warning" value="calculate">
+                </form>
+            </div>
+            <div class="row" style="margin-left: 1px">
+                <div class="modal fade" id="modalSubscriptionForm1" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h4 class="modal-title w-100 font-weight-bold">Address</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="{{route('step')}}" method="POST">
+                                @CSRF
+                                <div class="modal-body mx-3">
+                                    <div class="md-form mb-4">
+                                        <i class="fas fa-envelope prefix grey-text"></i>
+                                        <input type="text" name="address" class="form-control validate">
+                                        @error('address')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                        <label data-error="wrong" data-success="right" for="form2">Enter Address</label>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer d-flex justify-content-center">
+                                    <input type="submit" class="btn btn-indigo" value="check">
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="" class="btn btn-danger btn-rounded mb-4" data-toggle="modal"
+                       data-target="#modalSubscriptionForm1">
+                        step
+                    </a>
+                </div>
+            </div>
+
         </div>
 
-    </div>
+        {{--<div class="row">--}}
 
-    {{--<div class="row">--}}
+        @if($step==1)
+            <div class="row">
+                <table class="table">
+                    <thead class="black white-text">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">tag: {{$tag}}</th>
+                        <th scope="col">index: {{$index}}</th>
+                        <th scope="col">block offset : {{$bo}}</th>
+                        <th scope="col">status : {{$status}}</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
 
-    @if($step==1)
-        <div class="row">
-            <table class="table">
-                <thead class="black white-text">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">tag:  {{$tag}}</th>
-                    <th scope="col">index:  {{$index}}</th>
-                    <th scope="col">block offset :   {{$bo}}</th>
-                    <th scope="col">status :   {{$status}}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
+        @endif
+        @if($calculate==1)
+            <div class="row">
+                <table class="table">
+                    <thead class="black white-text">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">T access: {{$time}}</th>
 
-    @endif
-    @if($calculate==1)
-        <div class="row">
-            <table class="table">
-                <thead class="black white-text">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">T access:  {{$time}}</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
 
-                </tr>
-                </thead>
-            </table>
-        </div>
-
-    @endif
-    {{--</div>--}}
+        @endif
+        {{--</div>--}}
+{{--    @endif--}}
+{{--    @if($freshDataBase==1)--}}
+{{--<p>در دیتابیس کش های قبلی موجود است ابتدا دیتابیس را fresh کنید و بعد ادامه دهید.</p>--}}
+{{--        <a href="/test" class="btn btn-success">fresh Data </a>--}}
+{{--    @endif--}}
 
 </div>
 
@@ -267,5 +296,13 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 </body>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(function() {
+        $('#type').change(function(){
+            $('.way').hide();
+            $('#' + $(this).val()).show();
+        });
+    });
+</script>
 </html>

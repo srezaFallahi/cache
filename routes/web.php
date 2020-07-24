@@ -1,5 +1,6 @@
 <?php
 
+use App\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,15 +15,27 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-//    $x = hexdec('5900f');
-//    return decbin($x);
 
     $caches = \App\Cache::all();
+//    if (count($caches)==0){
+//        $freshDataBase=0;
+//    }
+//    else {
+        $freshDataBase = 0;
+        $s = 0;
+//    }
     $step=0;
     $calculate=0;
-    return view('layout', compact("caches","step","calculate"));
+    return view('layout', compact("caches","step","calculate","freshDataBase","s"));
 });
+Route::get('/test',function (){
+    \App\Cache::truncate();
+    \App\Status::truncate();
+    \App\Address::truncate();
+    return redirect('/');
+//     Cache::find(1)->get('map_type');
 
+});
 
 //Route::resource('/memory',"MemoryController");
 Route::resource('/cache', "CacheController");

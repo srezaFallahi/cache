@@ -39,6 +39,7 @@ class AddressController extends Controller
      */
     public function store(addressRequest $request)
     {
+
         $hex_address = $request['address'];
         $binary_address = $this->convert_to_binary($hex_address);
         $cache_id = $request['cache_id'];
@@ -49,29 +50,18 @@ class AddressController extends Controller
         $address_size = $cache->address_size;
         $address = $this->separatorBinary($binary_address, $tag_size, $index_size, $bo_size, $address_size);
         $address['cache_id'] = $cache_id;
-
-        $addressCheck = DB::table('addresses')->where('cache_id', '=', $address['cache_id'])->where('index', '=', $address['index'])->get();
-//      return count($addressCheck);
-
-        if (count($addressCheck) == 0) {
-            $address['status'] = 'm';
-            Address::create($address);
-            Status::create(['status'=>'m']);
+        $cacheType = Cache::find($cache_id);
+        if ($cacheType->map_type == 'direct') {
+            $this->addDirect($address);
+        } elseif ($cacheType->map_type == 'SA') {
+            $this->addSA($address);
+//return "asd";
         } else {
-            foreach ($addressCheck as $address1) {
-                if ($address1->tag==$address['tag']) {
-                    $address['status'] = 'h';
+            $this->addDirect($address);
+//            return $cacheType;
 
-                    Address::find($address1->id)->update($address);
-                    Status::create(['status' => 'h']);
-                }
-                else{
-                    $address['status'] = 'm';
-                    Address::find($address1->id)->update($address);
-                    Status::create(['status' => 'm']);
-                }
-            }
         }
+
 
         return redirect('/');
 
@@ -84,21 +74,20 @@ class AddressController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show( $id)
+    public function show($id)
     {
-       $cache= Cache::find(1);
-      $cache_access_time= $cache['cache_access_time'];
-      $cache_miss_time= $cache['cache_miss_time'];
-      $miss=Status::all()->where('status','=','m');
-      $addresses=Status::all();
-      $missRating=count($miss)/count($addresses);
-      $time=$cache_access_time+($cache_miss_time*$missRating);
-      $calculate=1;
-      $step=0;
-      $caches=Cache::all();
+        $cache = Cache::find(1);
+        $cache_access_time = $cache['cache_access_time'];
+        $cache_miss_time = $cache['cache_miss_time'];
+        $miss = Status::all()->where('status', '=', 'm');
+        $addresses = Status::all();
+        $missRating = count($miss) / count($addresses);
+        $time = $cache_access_time + ($cache_miss_time * $missRating);
+        $calculate = 1;
+        $step = 0;
+        $caches = Cache::all();
 
-      return view('layout', compact('step','time','calculate','caches'));
-
+        return view('layout', compact('step', 'time', 'calculate', 'caches'));
 
 
     }
@@ -164,10 +153,11 @@ class AddressController extends Controller
             $bo = 'notfound';
             $status = 'notfound';
         }
-        $calculate=0;
+        $calculate = 0;
 
         $caches = Cache::all();
-        return view('layout', compact('step', 'index', 'tag', 'bo', 'caches', 'status','calculate'));
+
+        return view('layout', compact('step', 'index', 'tag', 'bo', 'caches', 'status', 'calculate'));
     }
 
 
@@ -192,7 +182,7 @@ class AddressController extends Controller
 
         $address['tag'] = substr($binary, 0, $tag_size);
         $address['index'] = substr($binary, $tag_size, $index_size);
-        $address['bo'] = substr($binary, $index_size+$tag_size,$bo_size);
+        $address['bo'] = substr($binary, $index_size + $tag_size, $bo_size);
         return $address;
     }
 
@@ -201,6 +191,111 @@ class AddressController extends Controller
     {
         $cache = Cache::find($cache_id);
         return $cache;
+    }
 
+    public function addDirect($address)
+    {
+        $addressCheck = DB::table('addresses')->where('cache_id', '=', $address['cache_id'])->where('index', '=', $address['index'])->get();
+        if (count($addressCheck) == 0) {
+            $address['status'] = 'm';
+            Address::create($address);
+            Status::create(['status' => 'm']);
+        } else {
+            foreach ($addressCheck as $address1) {
+                if ($address1->tag == $address['tag']) {
+                    $address['status'] = 'h';
+
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'h']);
+                } else {
+                    $address['status'] = 'm';
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'm']);
+                }
+            }
+        }
+    }
+
+    public function addSA($address)
+    {
+        global $check;
+        $addressCheck = DB::table('addresses')->where('cache_id', '=', $address['cache_id'])->where('index', '=', $address['index'])->get();
+        $way = Cache::find($address['cache_id']);
+        $addressNumber = count($addressCheck);
+
+
+        if ($addressNumber < $way->way) {
+
+            $check = $this->isAddressIn($addressCheck, $address);
+            if ($check != 1) {
+                $address['status'] = 'm';
+                $address['counter'] = 0;
+                Address::create($address);
+                Status::create(['status' => 'm']);
+            }
+
+        } elseif ($addressNumber == $way->way) {
+            $check = $this->isAddressIn($addressCheck, $address);
+            if ($check != 1) {
+                $this->deleteAddress($addressCheck);
+                $address['status'] = 'm';
+                $address['counter'] = 0;
+                Address::create($address);
+                Status::create(['status' => 'm']);
+            }
+
+
+        } elseif ($addressNumber == 0) {
+            $address['status'] = 'm';
+            Address::create($address);
+            Status::create(['status' => 'm']);
+        }
+
+
+    }
+
+
+    public function deleteAddress($addressCheck)
+    {
+        global $min;
+        global $delete;
+        $ccount = 0;
+        foreach ($addressCheck as $address) {
+            $ccount++;
+            if ($ccount == 1) {
+                $min = $address->counter;
+                $delete = $address;
+            }
+            if ($address->counter < $min) {
+                $min = $address->counter;
+                $delete = $address;
+
+            }
+        }
+        Address::find($delete->id)->delete();
+
+    }
+
+    public function isAddressIn($addressCheck, $address)
+    {
+        global $check;
+
+        foreach ($addressCheck as $address1) {
+            if ($address1->bo == $address['bo']) {
+                $check = 1;
+                if ($address1->tag == $address['tag']) {
+                    $address['status'] = 'h';
+                    $address['counter'] = $address1->counter + 1;
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'h']);
+                } else {
+                    $address['status'] = 'm';
+                    $address['counter'] = 0;
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'm']);
+                }
+            }
+        }
+        return $check;
     }
 }
