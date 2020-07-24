@@ -133,8 +133,7 @@ class CacheController extends Controller
             $cache['tag_size'] = $cache['address_size'] - ($cache["bo_size"] + $cache['index_size']);
         } else {
             $cache['bo_size'] = log($request['block_size'], 2);
-            $cache['index_size'] = log($cache['cache_size'], 2) - (log($request['block_size'], 2));
-            $cache['tag_size'] = $cache['address_size'] - ($cache["bo_size"] + $cache['index_size']);
+            $cache['tag_size'] = $cache['address_size'] - ($cache["bo_size"] );
         }
         return $cache;
     }

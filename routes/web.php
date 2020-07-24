@@ -33,7 +33,6 @@ Route::get('/test',function (){
     \App\Status::truncate();
     \App\Address::truncate();
     return redirect('/');
-//     Cache::find(1)->get('map_type');
 
 });
 

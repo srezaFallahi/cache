@@ -17,7 +17,7 @@ class CreateCachesTable extends Migration
             $table->id();
             $table->integer('size');
             $table->string('type');
-            $table->integer('index_size');
+            $table->integer('index_size')->default(0);
             $table->integer('tag_size');
             $table->integer('bo_size');
             $table->integer('way')->nullable();

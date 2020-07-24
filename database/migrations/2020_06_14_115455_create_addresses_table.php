@@ -17,7 +17,7 @@ class CreateAddressesTable extends Migration
             $table->id();
             $table->integer('cache_id');
             $table->string('tag');
-            $table->string('index');
+            $table->string('index')->default(0);
             $table->string('bo');
             $table->string('status');
             $table->integer('counter')->default(0);

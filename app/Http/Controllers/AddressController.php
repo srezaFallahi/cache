@@ -55,9 +55,8 @@ class AddressController extends Controller
             $this->addDirect($address);
         } elseif ($cacheType->map_type == 'SA') {
             $this->addSA($address);
-//return "asd";
         } else {
-            $this->addDirect($address);
+            $this->addFA($address);
 //            return $cacheType;
 
         }
@@ -254,6 +253,43 @@ class AddressController extends Controller
 
     }
 
+    public function addFA($address)
+    {
+
+
+        global $freeSpace;
+        global $check;
+        $addressCheck = Address::all();
+        $cache = Cache::find($address['cache_id']);
+        if ($cache->type == 'kb') {
+            $freeSpace = log($cache->size * 1024, 2) - $cache->bo_size;
+        } else {
+            $freeSpace = log($cache->size * 1024 * 1024, 2) - $cache->bo_size;
+        }
+        $addressNumber = count($addressCheck);
+
+        if ($addressNumber < $freeSpace) {
+            $check = $this->isAddressIn($addressCheck, $address);
+            if ($check != 1) {
+                $address['status'] = 'm';
+                $address['counter'] = 0;
+                Address::create($address);
+                Status::create(['status' => 'm']);
+            }
+        } else {
+            $check = $this->isAddressIn($addressCheck, $address);
+            if ($check != 1) {
+                $this->deleteAddress($addressCheck);
+                $address['status'] = 'm';
+                $address['counter'] = 0;
+                Address::create($address);
+                Status::create(['status' => 'm']);
+
+            }
+
+        }
+    }
+
 
     public function deleteAddress($addressCheck)
     {
@@ -298,4 +334,6 @@ class AddressController extends Controller
         }
         return $check;
     }
+
+
 }
