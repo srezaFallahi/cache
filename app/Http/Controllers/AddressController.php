@@ -275,6 +275,7 @@ class AddressController extends Controller
                 $address['counter'] = 0;
                 Address::create($address);
                 Status::create(['status' => 'm']);
+
             }
         } else {
             $check = $this->isAddressIn($addressCheck, $address);
