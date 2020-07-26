@@ -262,9 +262,9 @@ class AddressController extends Controller
         $addressCheck = Address::all();
         $cache = Cache::find($address['cache_id']);
         if ($cache->type == 'kb') {
-            $freeSpace = log($cache->size * 1024, 2) - $cache->bo_size;
+            $freeSpace = ($cache->size * 1024) - $cache->bo_size;
         } else {
-            $freeSpace = log($cache->size * 1024 * 1024, 2) - $cache->bo_size;
+            $freeSpace = ($cache->size * 1024 * 1024) - $cache->bo_size;
         }
         $addressNumber = count($addressCheck);
 
