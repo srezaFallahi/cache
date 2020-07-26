@@ -240,7 +240,7 @@ class AddressController extends Controller
                 $address['status'] = 'm';
                 $address['counter'] = 0;
                 Address::create($address);
-                Status::create(['status' => 'm']);
+                Status::create(['status' => 'l']);
             }
 
 
@@ -284,7 +284,6 @@ class AddressController extends Controller
                 $address['counter'] = 0;
                 Address::create($address);
                 Status::create(['status' => 'm']);
-
             }
 
         }
@@ -324,11 +323,6 @@ class AddressController extends Controller
                     $address['counter'] = $address1->counter + 1;
                     Address::find($address1->id)->update($address);
                     Status::create(['status' => 'h']);
-                } else {
-                    $address['status'] = 'm';
-                    $address['counter'] = 0;
-                    Address::find($address1->id)->update($address);
-                    Status::create(['status' => 'm']);
                 }
             }
         }
@@ -345,12 +339,6 @@ class AddressController extends Controller
                     $address['counter'] = $address1->counter + 1;
                     Address::find($address1->id)->update($address);
                     Status::create(['status' => 'h']);
-                } else {
-                    $check = 1;
-                    $address['status'] = 'm';
-                    $address['counter'] = 0;
-                    Address::find($address1->id)->update($address);
-                    Status::create(['status' => 'm']);
                 }
 
         }
