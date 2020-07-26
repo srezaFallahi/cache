@@ -225,7 +225,7 @@ class AddressController extends Controller
 
         if ($addressNumber < $way->way) {
 
-            $check = $this->isAddressIn($addressCheck, $address);
+            $check = $this->isAddressInSA($addressCheck, $address);
             if ($check != 1) {
                 $address['status'] = 'm';
                 $address['counter'] = 0;
@@ -234,7 +234,7 @@ class AddressController extends Controller
             }
 
         } elseif ($addressNumber == $way->way) {
-            $check = $this->isAddressIn($addressCheck, $address);
+            $check = $this->isAddressInSA($addressCheck, $address);
             if ($check != 1) {
                 $this->deleteAddress($addressCheck);
                 $address['status'] = 'm';
@@ -334,6 +334,27 @@ class AddressController extends Controller
         }
         return $check;
     }
+    public function isAddressInSA($addressCheck, $address)
+    {
+        global $check;
 
+        foreach ($addressCheck as $address1) {
+                if ($address1->tag == $address['tag']) {
+                    $check = 1;
+                    $address['status'] = 'h';
+                    $address['counter'] = $address1->counter + 1;
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'h']);
+                } else {
+                    $check = 1;
+                    $address['status'] = 'm';
+                    $address['counter'] = 0;
+                    Address::find($address1->id)->update($address);
+                    Status::create(['status' => 'm']);
+                }
+
+        }
+        return $check;
+    }
 
 }
